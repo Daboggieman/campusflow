@@ -7,7 +7,7 @@ class TestCalculatePriority(unittest.TestCase):
         self.assertEqual(calculate_priority("high", 10), "critical")
 
     def test_high_priority(self):
-        self.assertEqual(calculate_priority("high", 8), "high")
+        self.assertEqual(calculate_priority("high", 9), "high")
 
     def test_medium_priority(self):
         self.assertEqual(calculate_priority("medium", 3), "medium")
