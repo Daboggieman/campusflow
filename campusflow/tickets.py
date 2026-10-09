@@ -5,3 +5,4 @@ urgencies = ["low", "medium", "high", "critical"]
 @dataclass
 class Ticket:
     title: str
+    
