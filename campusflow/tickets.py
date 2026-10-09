@@ -4,7 +4,6 @@ urgencies = ["low", "medium", "high", "critical"]
 
 @dataclass
 class Ticket:
-    id: str
     title: str
     category: str
     urgency: str
