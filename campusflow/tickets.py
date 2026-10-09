@@ -12,13 +12,13 @@ def check_category(raw_category: str) -> str:
     for category in categories:
         if category.casefold() == raw_category.casefold():
             return category
-    raise ValueError(f"Invalid category. Choose one of: {', '.join(categories)}.")
+    raise ValueError(f"Choose one of: {', '.join(categories)}.")
     
 def check_urgency(raw_urgency: str) -> str:
     for urgency in urgencies:
         if urgency.casefold() == raw_urgency.casefold():
             return urgency
-    raise ValueError(f"Invalid urgency. Choose one of: {', '.join(urgencies)}.")
+    raise ValueError(f"Choose one of: {', '.join(urgencies)}.")
 
 def check_affected_users(raw_affected_users: str) -> int:
     try:
