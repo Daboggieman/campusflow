@@ -3,7 +3,7 @@ categories = ["network", "hardware", "software", "other"]
 urgencies = ["low", "medium", "high", "critical"]
 
 def check_title(raw_title: str):
-    title = raw_title.strip()
+    title = raw_title.strip().lower()
     if not title:
         raise ValueError("Title cannot be blank")
     return title

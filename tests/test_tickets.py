@@ -23,7 +23,7 @@ class TestTicket(unittest.TestCase):
         self.assertFalse(ticket.assigned_to)
 class TestCheckFunctions(unittest.TestCase):
     def test_check_title(self):
-        assert check_title("Valid Title") == "Valid Title"
+        assert check_title("valid title") == "valid title"
         try:
             check_title("   ")
         except ValueError as e:
