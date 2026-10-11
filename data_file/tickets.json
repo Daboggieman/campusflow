@@ -1,0 +1,12 @@
+{
+    "T1": {
+        "id": "T1",
+        "title": "network in facility",
+        "category": "network",
+        "urgency": "high",
+        "affected_users": 20,
+        "priority": "critical",
+        "status": "open",
+        "assigned_to": false
+    }
+}

@@ -1,4 +1,5 @@
-from main import Counter
+from collections import Counter
+
 def generate_report(tickets):
 
     status_counts = Counter(

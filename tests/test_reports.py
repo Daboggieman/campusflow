@@ -2,7 +2,8 @@ import unittest
 from io import StringIO
 from contextlib import redirect_stdout
 
-from campusflow.reports import summarize, print_report
+from campusflow.reports import generate_report, print_report
+from campusflow.tickets import Ticket
 
 
 def make_ticket(
@@ -10,26 +11,25 @@ def make_ticket(
     priority="medium",
     status="open",
 ):
-    return {
-        "id": ticket_id,
-        "title": "Network issue",
-        "category": "network",
-        "urgency": "medium",
-        "affected_users": 5,
-        "priority": priority,
-        "status": status,
-        "assigned_to": None,
-    }
+    return Ticket(
+        id=ticket_id,
+        title="Network issue",
+        category="network",
+        urgency="medium",
+        affected_users=5,
+        priority=priority,
+        status=status,
+        assigned_to=False,
+    )
 
 
-class TestSummarize(unittest.TestCase):
-    """summarize should count tickets by status and priority."""
+class TestGenerateReport(unittest.TestCase):
 
     def test_empty_tickets_gives_zero_counts(self):
-        summary = summarize({})
-        self.assertEqual(summary["total"], 0)
-        self.assertEqual(sum(summary["by_status"].values()), 0)
-        self.assertEqual(sum(summary["by_priority"].values()), 0)
+        report = generate_report({})
+        self.assertEqual(report["total"], 0)
+        self.assertEqual(report["by_status"], {})
+        self.assertEqual(report["by_priority"], {})
 
     def test_totals_by_status_and_priority(self):
         tickets = {
@@ -38,25 +38,24 @@ class TestSummarize(unittest.TestCase):
             "T003": make_ticket("T003", "low", "resolved"),
             "T004": make_ticket("T004", "critical", "open"),
         }
-        summary = summarize(tickets)
-        self.assertEqual(summary["total"], 4)
-        self.assertEqual(summary["by_status"]["open"], 2)
-        self.assertEqual(summary["by_status"]["in_progress"], 1)
-        self.assertEqual(summary["by_status"]["resolved"], 1)
-        self.assertEqual(summary["by_priority"]["critical"], 1)
-        self.assertEqual(summary["by_priority"]["high"], 1)
-        self.assertEqual(summary["by_priority"]["medium"], 1)
-        self.assertEqual(summary["by_priority"]["low"], 1)
+        report = generate_report(tickets)
+        self.assertEqual(report["total"], 4)
+        self.assertEqual(report["by_status"]["open"], 2)
+        self.assertEqual(report["by_status"]["in_progress"], 1)
+        self.assertEqual(report["by_status"]["resolved"], 1)
+        self.assertEqual(report["by_priority"]["critical"], 1)
+        self.assertEqual(report["by_priority"]["high"], 1)
+        self.assertEqual(report["by_priority"]["medium"], 1)
+        self.assertEqual(report["by_priority"]["low"], 1)
 
 
 class TestPrintReport(unittest.TestCase):
-    """The printer is a separate function from the counter."""
 
     def test_empty_prints_no_tickets_yet(self):
         buf = StringIO()
         with redirect_stdout(buf):
-            print_report(summarize({}))
-        self.assertIn("no tickets yet", buf.getvalue())
+            print_report(generate_report({}))
+        self.assertIn("No tickets yet.", buf.getvalue())
 
     def test_nonempty_prints_totals(self):
         tickets = {
@@ -65,12 +64,13 @@ class TestPrintReport(unittest.TestCase):
         }
         buf = StringIO()
         with redirect_stdout(buf):
-            print_report(summarize(tickets))
+            print_report(generate_report(tickets))
         out = buf.getvalue()
-        self.assertIn("total", out.lower())
-        self.assertIn("2", out)
-        self.assertIn("open", out)
-        self.assertIn("high", out)
+        self.assertIn("Total tickets: 2", out)
+        self.assertIn("open: 1", out)
+        self.assertIn("resolved: 1", out)
+        self.assertIn("high: 1", out)
+        self.assertIn("medium: 1", out)
 
 
 if __name__ == "__main__":

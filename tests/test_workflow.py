@@ -5,6 +5,7 @@ from campusflow.workflow import (
     get_work_queue,
     move_ticket,
 )
+from campusflow.tickets import Ticket
 
 
 def make_ticket(
@@ -13,36 +14,34 @@ def make_ticket(
     status="open",
     assigned_to=None,
 ):
-    return {
-        "id": ticket_id,
-        "title": "Network issue",
-        "category": "network",
-        "urgency": "medium",
-        "affected_users": 5,
-        "priority": priority,
-        "status": status,
-        "assigned_to": assigned_to,
-    }
+    return Ticket(
+        id=ticket_id,
+        title="Network issue",
+        category="network",
+        urgency="medium",
+        affected_users=5,
+        priority=priority,
+        status=status,
+        assigned_to=assigned_to,
+    )
 
 
 class TestMoveTicket(unittest.TestCase):
-    """Tests for workflow.move_ticket — the F4 status moves."""
 
     def test_open_can_move_to_in_progress(self):
         ticket = make_ticket(status="open", assigned_to="Ada")
         move_ticket(ticket, "in_progress")
-        self.assertEqual(ticket["status"], "in_progress")
+        self.assertEqual(ticket.status, "in_progress")
 
     def test_in_progress_can_move_to_resolved(self):
         ticket = make_ticket(status="in_progress", assigned_to="Ada")
         move_ticket(ticket, "resolved")
-        self.assertEqual(ticket["status"], "resolved")
+        self.assertEqual(ticket.status, "resolved")
 
     def test_resolved_can_be_reopened_to_open(self):
-        # F4: the explicit reopen.
         ticket = make_ticket(status="resolved", assigned_to="Ada")
         move_ticket(ticket, "open")
-        self.assertEqual(ticket["status"], "open")
+        self.assertEqual(ticket.status, "open")
 
     def test_unknown_move_raises(self):
         ticket = make_ticket(status="open")
@@ -60,7 +59,7 @@ class TestMoveTicket(unittest.TestCase):
             move_ticket(ticket, "banana")
 
     def test_unassigned_cannot_move_to_in_progress(self):
-        ticket = make_ticket(status="open", assigned_to=None)
+        ticket = make_ticket(status="open", assigned_to=False)
         with self.assertRaises(ValueError):
             move_ticket(ticket, "in_progress")
 
@@ -68,26 +67,24 @@ class TestMoveTicket(unittest.TestCase):
         ticket = make_ticket(status="open")
         with self.assertRaises(ValueError):
             move_ticket(ticket, "resolved")
-        self.assertEqual(ticket["status"], "open")
+        self.assertEqual(ticket.status, "open")
 
 
 class TestAssignTicket(unittest.TestCase):
-    """Tests for workflow.assign_ticket — the F3 assignment."""
 
     def test_directly_assigns_the_staff_member(self):
         ticket = make_ticket(status="open")
         assign_ticket(ticket, "Rachel")
-        self.assertEqual(ticket["assigned_to"], "Rachel")
+        self.assertEqual(ticket.assigned_to, "Rachel")
 
     def test_cannot_assign_resolved_ticket(self):
         ticket = make_ticket(status="resolved")
         with self.assertRaises(ValueError):
             assign_ticket(ticket, "Rachel")
-        self.assertIsNone(ticket["assigned_to"])
+        self.assertFalse(ticket.assigned_to)
 
 
 class TestGetWorkQueue(unittest.TestCase):
-    """Tests for workflow.get_work_queue — the F5 work queue."""
 
     def test_includes_open_and_in_progress_only(self):
         tickets = {
@@ -109,7 +106,7 @@ class TestGetWorkQueue(unittest.TestCase):
         }
         result = get_work_queue(cards)
         self.assertEqual(
-            [ticket["id"] for ticket in result],
+            [ticket.id for ticket in result],
             ["T004", "T001", "T002", "T003"],
         )
 
@@ -119,11 +116,9 @@ class TestGetWorkQueue(unittest.TestCase):
             "T020": make_ticket("T020", priority="low", status="open"),
             "T003": make_ticket("T003", priority="low", status="open"),
         }
-        # T003 must sort before T020 before T100 — a text sort would
-        # put T100 first, so this is what proves ids compare as numbers.
         result = get_work_queue(tickets)
         self.assertEqual(
-            [ticket["id"] for ticket in result],
+            [ticket.id for ticket in result],
             ["T003", "T020", "T100"],
         )
 
