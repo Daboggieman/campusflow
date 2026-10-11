@@ -5,7 +5,7 @@ from pathlib import Path
 from campusflow.tickets import Ticket
 
 
-DATA_DIR = Path("data_file")
+DATA_DIR = Path("data_folder")
 TICKETS_FILE = DATA_DIR / "tickets.json"
 COUNTER_FILE = DATA_DIR / "counter.json"
 STAFF_FILE = DATA_DIR / "staff.json"
