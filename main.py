@@ -1,14 +1,7 @@
 from campusflow.priority import calculate_priority
-from campusflow.tickets import categories, urgencies
-menu = [
-    ("Create_ticket", create_ticket,)
-    ("List_ticket", List_ticket),
-    ("Quit", quit_program),
-    ("Assign_ticket", assign_ticket),
-    ("Change_status", Change_status),
-    ("Work_queue", Work_queue),
-    ("Reposts", reposts),
-]
+from campusflow.tickets import categories, urgencies, Ticket
+from campusflow.storage import load_json, load_counter,tickets, save_json
+from campusflow.workflow import move_ticket, assign_ticket, get_work_queue
 
 def create_ticket():
     global counter
@@ -36,29 +29,30 @@ def create_ticket():
         except ValueError:
             print("enter a whole number.")
     priority = calculate_priority(urgency, affected_users)
-    ticket = {
-        "id": counter,
-        "title": title,
-        "category": category,
-        "urgency": urgency,
-        "affected_users": affected_users,
-        "priority": priority,
-        "status": "open"
-    }
+    ticket = Ticket(
+        id=id,
+        title=title,
+        category=category,
+        urgency=urgency,
+        affected_users=affected_users,
+        priority=priority,
+        status="open",
+        assigned_to= False,
+    )
 
-    ticket[counter] = ticket
+    tickets[counter] = ticket
     counter += 1
-    save_data()
+    save_json()
 
     print(f"Ticket created: {ticket}")
 
 def List_ticket():
-    for ticket in tickets.value():
+    for ticket in tickets.values():
         print(
             ticket["id"],
             ticket["title"],
             ticket["priority"],
-            tticket["status"],
+            ticket["status"],
         )
 
     try:
@@ -74,26 +68,31 @@ def List_ticket():
     print(tickets[ticket_id])
 
 def main():
-    load_data()
-    check_counter()
+    load_json()
+    load_counter()
 
     while True:
         for number, (label, action) in enumerate(menu, start=1):
             print(f"{number}.{label}")
             
-        choice = input("choose an option": )
+        choice = input("choose an option: ")
 
         try:
-            choice = int(choce)
+            choice = int(choice)
         except ValueError:
             print("Enter a valid menu number.")
             continue
         if not 1 <= choice <= len(menu):
-            print("Invalid menu option".)
+            print("Invalid menu option")
             continue
         
         action = menu[choice - 1][1]
         action()
 
-        if action == quit_program:
-            break
+menu = [
+    ("Create ticket", create_ticket,)
+    ("Move ticket", move_ticket)
+    ("Assign ticket", assign_ticket),
+    ("Work queue", get_work_queue),
+    ("List_ticket", List_ticket)
+]

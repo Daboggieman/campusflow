@@ -18,12 +18,6 @@ def move_ticket(ticket, new_status):
             f"Cannot move ticket from {current_status} to {new_status}."
         )
 
-    if current_status == "resolved" and not "reopened":
-        raise ValueError("A resolved ticket can only return to open through an explicit reopen.")
-
-    if current_status == "resolved" and new_status != "open":
-        raise ValueError("A resolved ticket can only be reopened to open.")
-
     if new_status == "in_progress" and not ticket.get("assigned_to"):
         raise ValueError("A ticket must be assigned before moving to in_progress.")
 
