@@ -36,7 +36,7 @@ class Ticket:
     category: str
     urgency: str
     affected_users: int
-    priority: str | "low"
+    priority: str
     status: str
     assigned_to: bool
 
