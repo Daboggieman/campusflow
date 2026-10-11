@@ -3,7 +3,7 @@ categories = ["network", "hardware", "software", "other"]
 urgencies = ["low", "medium", "high", "critical"]
 
 def check_title(raw_title: str):
-    title = raw_title.strip()
+    title = raw_title.strip().lower()
     if not title:
         raise ValueError("Title cannot be blank")
     return title
@@ -25,8 +25,8 @@ def check_affected_users(raw_affected_users: str) -> int:
         affected_users = int(raw_affected_users)
     except ValueError:
         raise ValueError("Affected users must be an integer.")
-    if affected_users < 0:
-        raise ValueError("Affected users cannot be negative.")
+    if affected_users <= 0:
+        raise ValueError("Affected users cannot be less than 1.")
     return affected_users
 
 @dataclass(frozen=False)
@@ -36,7 +36,7 @@ class Ticket:
     category: str
     urgency: str
     affected_users: int
-    priority: str | "low"
+    priority: str
     status: str
     assigned_to: bool
 

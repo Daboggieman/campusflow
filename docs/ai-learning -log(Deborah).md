@@ -73,4 +73,3 @@ dataclass does the followng automatically:
 1. it creates ___init__().
 2. it creates a useful string representation.
 3. it allows us to compare objects.
-
