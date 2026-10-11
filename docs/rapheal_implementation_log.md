@@ -35,7 +35,7 @@ Then, tests/test_priority.py
 
 ##
 
-## tickets.py — the dataclass and the field checks. Walking through it in order.
+## tickets.py — the dataclass and the field checks.
 
 Before the functions: the allowed values
 1. Start the file by writing down the two lists of allowed values as names at module level — one for the categories, one for the urgencies. Put them above everything else, since the checks below and the menu later both need them.
