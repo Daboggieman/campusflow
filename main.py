@@ -1,6 +1,7 @@
 from campusflow.priority import calculate_priority
+from campusflow.tickets import categories, urgencies
 menu = [
-    ("Create_ticket", create_ticket),
+    ("Create_ticket", create_ticket,)
     ("List_ticket", List_ticket),
     ("Quit", quit_program),
     ("Assign_ticket", assign_ticket),
@@ -12,17 +13,17 @@ menu = [
 def create_ticket():
     global counter
     while True:
-        title = input("enter title: ").strip()
+        title = input("enter title: ").strip().lower()
         if title:
             break
-        print("title cannot be empty".)
+        print("title cannot be empty")
     while True:
-        category = input("enter category: ").strip()
+        category = input("enter category: ").strip().lower()
         if category in categories:
             break
         print("Invalid category")
     while True:
-        urgency = input("enter urgency: ").strip()
+        urgency = input("enter urgency: ").strip().lower()
         if urgency in urgencies:
             break
         print("Invalid urgency")

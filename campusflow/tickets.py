@@ -25,8 +25,8 @@ def check_affected_users(raw_affected_users: str) -> int:
         affected_users = int(raw_affected_users)
     except ValueError:
         raise ValueError("Affected users must be an integer.")
-    if affected_users < 0:
-        raise ValueError("Affected users cannot be negative.")
+    if affected_users <= 0:
+        raise ValueError("Affected users cannot be less than 1.")
     return affected_users
 
 @dataclass(frozen=False)
