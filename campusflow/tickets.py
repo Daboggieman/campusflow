@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-categories = ["network", "hardware", "software", "other"]
+categories = ["network", "hardware", "software", "administrative", "other"]
 urgencies = ["low", "medium", "high", "critical"]
 
 def check_title(raw_title: str):

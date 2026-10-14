@@ -17,12 +17,12 @@ def create_ticket():
             break
         print("title cannot be empty")
     while True:
-        category = input("enter category: ").strip().lower()
+        category = input("enter category [network, hardware, software, administrative, other]: ").strip().lower()
         if category in categories:
             break
         print("Invalid category")
     while True:
-        urgency = input("enter urgency: ").strip().lower()
+        urgency = input("enter urgency [low, medium, high]: ").strip().lower()
         if urgency in urgencies:
             break
         print("Invalid urgency")
@@ -49,7 +49,8 @@ def create_ticket():
     )
     tickets[ticket_id] = ticket
     save_tickets(tickets)
-    print(f"Ticket created: {ticket_id} - {ticket.title}")
+    print(f"Ticket created: {ticket_id} - {ticket.title} ")
+    print("-------------------------------------------- \n")
 
 
 def list_ticket():
@@ -71,7 +72,7 @@ def list_ticket():
     print(f"priority: {ticket.priority}")
     print(f"status: {ticket.status}")
     print(f"assigned to: {ticket.assigned_to}")
-
+    print("-------------------------------------------- \n")
 
 def assign():
     if not tickets:
@@ -99,8 +100,10 @@ def assign():
         assign_ticket(tickets[ticket_id], staff[choice - 1])
         save_tickets(tickets)
         print(f"Ticket {ticket_id} assigned to {staff[choice - 1]}.")
+        print("-------------------------------------------- \n")
     except ValueError as error:
         print(error)
+
 
 
 def change_status():
@@ -116,6 +119,8 @@ def change_status():
         move_ticket(tickets[ticket_id], new_status)
         save_tickets(tickets)
         print(f"Ticket {ticket_id} is now {new_status}.")
+        print("-------------------------------------------- \n")
+
     except ValueError as error:
         print(error)
 
@@ -127,10 +132,14 @@ def work_queue():
         return
     for ticket in queue:
         print(ticket.id, ticket.priority, ticket.status)
+        print("-------------------------------------------- \n")
+
 
 
 def reports():
     print_report(generate_report(tickets))
+    print("-------------------------------------------- \n")
+
 
 
 def quit_program():
@@ -159,13 +168,13 @@ def main():
 
 
 menu = [
-    ("Create ticket", create_ticket),
-    ("List tickets", list_ticket),
-    ("Assign ticket", assign),
-    ("Change status", change_status),
-    ("Work queue", work_queue),
-    ("Reports", reports),
-    ("Quit", quit_program),
+    ("create ticket", create_ticket),
+    ("list tickets", list_ticket),
+    ("assign ticket", assign),
+    ("change status", change_status),
+    ("work queue", work_queue),
+    ("reports", reports),
+    ("quit", quit_program),
 ]
 
 if __name__ == "__main__":
